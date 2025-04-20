@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>撮影費用 かんたん見積もりフォーム</title>
+  <style>
+    .reserve-button {
+  display: block;
+  text-align: center;
+  background-color: #c0392b;
+  color: white;
+  padding: 0.8em 2em;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.5em auto 0;
+  width: fit-content;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reserve-button:hover {
+  background-color: #a93226;
+}
+
+    body {
+      font-family: sans-serif;
+      background-color: #f2f2f2;
+      padding: 2em;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 0.2em;
+    }
+
+    .description {
+      text-align: center;
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 1.5em;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      margin-top: 1.2em;
+      font-weight: bold;
+    }
+
+    .tooltip {
+      display: inline-block;
+      background: #ccc;
+      color: #333;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      font-size: 12px;
+      margin-left: 0.5em;
+      cursor: pointer;
+      line-height: 18px;
+      position: relative;
+    }
+
+    .tooltip:hover .tooltip-text {
+      display: block;
+    }
+
+    .tooltip-text {
+      display: none;
+      position: absolute;
+      top: 25px;
+      left: 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 0.7em;
+      font-size: 0.8em;
+      width: 250px;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    select {
+      width: 100%;
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 0.3em;
+    }
+
+    button {
+      display: block;
+      margin: 2em auto 0.5em;
+      padding: 0.8em 2em;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    #price {
+      font-size: 1.5em;
+      margin-top: 1em;
+      font-weight: bold;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    #price small {
+      font-size: 0.75em;
+      color: #2c3e50;
+      margin-left: 0.3em;
+    }
+
+    .price-note {
+      text-align: center;
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>撮影費用 かんたん見積もりフォーム</h1>
+  <div class="description">*匿名でご利用いただけますので、どうぞお気軽にお試しください。</div>
+
+  <label>1. 撮影内容を教えてください</label>
+  <select id="content">
+    <option value="写真">写真のみ</option>
+    <option value="動画">動画のみ</option>
+    <option value="写真と動画">写真と動画の両方</option>
+  </select>
+
+  <label>2. ご希望の撮影時間を教えてください
+    <div class="tooltip">?
+      <div class="tooltip-text">
+        写真の場合: 1時間で約40枚、2時間で約90枚の写真データが目安になります。<br>
+        動画の場合: 1時間で20~30秒の動画1本、2時間で 40~60秒の動画1本が目安になります。
+      </div>
+    </div>
+  </label>
+  <select id="duration">
+    <option value="約1時間">約1時間</option>
+    <option value="約2時間">約2時間</option>
+    <option value="3~4時間">3~4時間</option>
+    <option value="半日(約8時間)">半日(約8時間)</option>
+  </select>
+
+  <label>3. 撮影後の編集の有無について教えてください</label>
+  <select id="editing">
+    <option value="編集込み">編集込み</option>
+    <option value="編集なし(素材データのみ)">編集なし(素材データのみ)</option>
+  </select>
+
+  <label>4. 撮影データの利用について教えてください
+    <div class="tooltip">?
+      <div class="tooltip-text">
+        SNSへの掲載をご了承いただける場合は、一律で料金を10％割引させていただきます。<br>
+        なお、個人情報には十分配慮し、個人名の掲載いたしませんのでご安心ください。
+      </div>
+    </div>
+  </label>
+  <select id="sns">
+    <option value="OK">SNS掲載OK</option>
+    <option value="NG">SNS掲載NG</option>
+  </select>
+
+  <button onclick="calculate()">見積もりを計算する</button>
+
+  <div id="price">見積もり金額: ¥0<small>(税込)</small></div>
+  <div class="price-note">*遠方での撮影の場合は、別途出張料を頂く場合がございますので、あらかじめご了承ください。</div>
+
+  <script>
+    function calculate() {
+      const content = document.getElementById("content").value;
+      const duration = document.getElementById("duration").value;
+      const editing = document.getElementById("editing").value;
+      const sns = document.getElementById("sns").value;
+
+      const basePrices = {
+        '写真': {
+          '約1時間': 10000,
+          '約2時間': 17000,
+          '3~4時間': 24000,
+          '半日(約8時間)': 32000
+        },
+        '動画': {
+          '約1時間': 16000,
+          '約2時間': 24000,
+          '3~4時間': 32000,
+          '半日(約8時間)': 42000
+        },
+        '写真と動画': {
+          '約1時間': 21000,
+          '約2時間': 29000,
+          '3~4時間': 38000,
+          '半日(約8時間)': 49000
+        }
+      };
+
+      let price = basePrices[content][duration];
+
+      // 編集なしの割引
+      if (editing === '編集なし(素材データのみ)') {
+        if (content === '写真') price *= 0.8;
+        else if (content === '動画') price *= 0.6;
+        else if (content === '写真と動画') price *= 0.75;
+      }
+
+      // SNS OK の割引
+      if (sns === 'OK') {
+        price *= 0.9;
+      }
+
+      document.getElementById("price").innerHTML =
+        `見積もり金額: ¥${Math.round(price).toLocaleString()}<small>(税込)</small>`;
+    }
+  </script>
+<a href="https://forms.gle/qGVrDXYRX7csJcqU6" target="_blank" class="reserve-button">撮影のご予約はこちら</a>
+</body>
+</html>
