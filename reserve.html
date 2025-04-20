@@ -85,7 +85,9 @@
 <body>
   <h1>撮影予約フォーム</h1>
 
-  <form id="reservationForm">
+  <form id="reservationForm" action="https://formspree.io/f/mwplgznp" method="POST">
+    <input type="hidden" name="_redirect" value="https://kortafilms.github.io/estimate/thanks.html">
+
     <label>1. あなたのお名前を教えてください</label>
     <input type="text" name="name" placeholder="例: 本田 健" required>
 
@@ -160,14 +162,10 @@
     <button type="submit" class="submit-btn" id="submitButton">予約を確定する</button>
 
     <div class="note">※お支払いは撮影当日、現金または振込にてお願いしております。</div>
-    <form id="reservationForm" action="https://formspree.io/f/https://formspree.io/f/mwplgznp" method="POST"> 
-      <form action="https://formspree.io/f/xxxxxxxx" method="POST" target="_blank">
-  <input type="hidden" name="_redirect" value="https://kortafilms.github.io/estimate/thanks.html">
-
   </form>
 
   <script>
-    // localStorageから見積もりデータを取得
+    // 見積もり表示
     const estimate = JSON.parse(localStorage.getItem('estimate'));
     const estimateBox = document.getElementById('estimateBox');
     const submitButton = document.getElementById('submitButton');
@@ -186,7 +184,7 @@
       document.getElementById('reservationForm').style.display = 'none';
     }
 
-    // その他選択肢に応じて自由記述欄表示
+    // その他選択肢時の表示切替
     document.getElementById('purpose').addEventListener('change', function () {
       document.getElementById('purposeOther').style.display = this.value === 'その他' ? 'block' : 'none';
     });
@@ -195,18 +193,11 @@
       document.getElementById('locationOther').style.display = this.value === 'その他' ? 'block' : 'none';
     });
 
-    // ご質問がある → ボタン無効化＆案内表示
+    // ご質問「はい」なら案内＆送信無効
     document.getElementById('hasQuestion').addEventListener('change', function () {
       const show = this.value === 'はい';
       document.getElementById('contactInfo').style.display = show ? 'block' : 'none';
       submitButton.disabled = show;
-    });
-
-    // フォーム送信処理
-    document.getElementById('reservationForm').addEventListener('submit', function (e) {
-      alert('ご予約が完了しました！ありがとうございます。');
-      localStorage.removeItem('estimate');
-      this.reset();
     });
   </script>
 </body>
