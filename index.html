@@ -178,6 +178,14 @@
       const duration = document.getElementById("duration").value;
       const editing = document.getElementById("editing").value;
       const sns = document.getElementById("sns").value;
+      const estimateData = {
+  content,
+  duration,
+  editing,
+  sns,
+  total
+};
+localStorage.setItem('estimate', JSON.stringify(estimateData));
 
       const basePrices = {
         '写真': {
