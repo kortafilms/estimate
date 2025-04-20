@@ -44,7 +44,12 @@
       cursor: pointer;
     }
 
-    .submit-btn:hover {
+    .submit-btn:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+
+    .submit-btn:hover:not(:disabled) {
       background-color: #a93226;
     }
 
@@ -52,7 +57,7 @@
       font-size: 0.85em;
       color: #666;
       text-align: center;
-      margin-bottom: 2em;
+      margin-top: 2em;
     }
 
     .estimate-box {
@@ -65,6 +70,15 @@
 
     .estimate-box p {
       margin: 0.5em 0;
+    }
+
+    .contact-info {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 1em;
+      margin-top: 1em;
+      border-radius: 4px;
+      color: #856404;
     }
   </style>
 </head>
@@ -79,15 +93,15 @@
     <input type="email" name="email" placeholder="例: honda.1995@gmail.com" required>
 
     <label>3. ご希望の撮影目的を教えてください</label>
-    <select name="purpose" required>
+    <select id="purpose" name="purpose" required>
       <option value="">選択してください</option>
-      <option>企業・店舗PR</option>
-      <option>イベント</option>
-      <option>ポートレート</option>
-      <option>商品・サービス紹介</option>
-      <option>その他（自由記述）</option>
+      <option value="企業・店舗PR">企業・店舗PR</option>
+      <option value="イベント">イベント</option>
+      <option value="ポートレート">ポートレート</option>
+      <option value="商品・サービス紹介">商品・サービス紹介</option>
+      <option value="その他">その他</option>
     </select>
-    <textarea name="purposeOther" placeholder="その他の場合は内容をご記入ください"></textarea>
+    <textarea id="purposeOther" name="purposeOther" placeholder="その他の場合はこちらにご記入ください" style="display:none;"></textarea>
 
     <label>4. ご希望の画角の向きを教えてください</label>
     <select name="orientation" required>
@@ -98,14 +112,14 @@
     </select>
 
     <label>5. 撮影場所について教えてください</label>
-    <select name="location" required>
+    <select id="location" name="location" required>
       <option value="">選択してください</option>
-      <option>呉市内</option>
-      <option>広島市内</option>
-      <option>広島県内（呉市・広島市を除く）</option>
-      <option>その他（自由記述）</option>
+      <option value="呉市内">呉市内</option>
+      <option value="広島市内">広島市内</option>
+      <option value="広島県内（呉市・広島市を除く）">広島県内（呉市・広島市を除く）</option>
+      <option value="その他">その他</option>
     </select>
-    <textarea name="locationOther" placeholder="その他の場合は内容をご記入ください"></textarea>
+    <textarea id="locationOther" name="locationOther" placeholder="その他の場合はこちらにご記入ください" style="display:none;"></textarea>
 
     <label>6. おおまかな撮影希望日を教えてください</label>
     <select name="datePreference" required>
@@ -127,21 +141,32 @@
     </select>
 
     <label>8. ご質問やご相談はありますか？</label>
-    <textarea name="message" rows="4" placeholder="ご自由にご記入ください"></textarea>
+    <select id="hasQuestion" name="hasQuestion" required>
+      <option value="">選択してください</option>
+      <option value="いいえ">いいえ</option>
+      <option value="はい">はい</option>
+    </select>
 
-    <button type="submit" class="submit-btn">予約を確定する</button>
+    <div id="contactInfo" class="contact-info" style="display: none;">
+      ご質問はこちらから：<br>
+      Instagram（DM）→ <strong>@kortafilms</strong><br>
+      または Eメール → <strong>kortafilms@gmail.com</strong>
+    </div>
+
+    <div class="estimate-box" id="estimateBox">
+      <!-- JavaScriptで見積もり内容を表示 -->
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitButton">予約を確定する</button>
 
     <div class="note">※お支払いは撮影当日、現金または振込にてお願いしております。</div>
   </form>
-
-  <div class="estimate-box" id="estimateBox">
-    <!-- JavaScriptで見積もり内容を表示 -->
-  </div>
 
   <script>
     // localStorageから見積もりデータを取得
     const estimate = JSON.parse(localStorage.getItem('estimate'));
     const estimateBox = document.getElementById('estimateBox');
+    const submitButton = document.getElementById('submitButton');
 
     if (estimate) {
       estimateBox.innerHTML = `
@@ -157,10 +182,25 @@
       document.getElementById('reservationForm').style.display = 'none';
     }
 
-    // フォーム送信処理
-    document.getElementById('reservationForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    // その他選択肢に応じて自由記述欄表示
+    document.getElementById('purpose').addEventListener('change', function () {
+      document.getElementById('purposeOther').style.display = this.value === 'その他' ? 'block' : 'none';
+    });
 
+    document.getElementById('location').addEventListener('change', function () {
+      document.getElementById('locationOther').style.display = this.value === 'その他' ? 'block' : 'none';
+    });
+
+    // ご質問がある → ボタン無効化＆案内表示
+    document.getElementById('hasQuestion').addEventListener('change', function () {
+      const show = this.value === 'はい';
+      document.getElementById('contactInfo').style.display = show ? 'block' : 'none';
+      submitButton.disabled = show;
+    });
+
+    // フォーム送信処理
+    document.getElementById('reservationForm').addEventListener('submit', function (e) {
+      e.preventDefault();
       alert('ご予約が完了しました！ありがとうございます。');
       localStorage.removeItem('estimate');
       this.reset();
