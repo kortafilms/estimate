@@ -15,7 +15,14 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
+    }
+
+    .privacy-note {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 1.5em;
     }
 
     form label {
@@ -84,6 +91,9 @@
 </head>
 <body>
   <h1>撮影予約フォーム</h1>
+  <p class="privacy-note">
+    *お客様の個人情報は連絡以外での用途で使用しませんのでご安心ください。
+  </p>
 
   <form id="reservationForm" action="https://formspree.io/f/mwplgznp" method="POST">
     <input type="hidden" name="_redirect" value="https://kortafilms.github.io/estimate/thanks.html">
@@ -155,50 +165,4 @@
       または Eメール → <strong>kortafilms.mov@gmail.com</strong>
     </div>
 
-    <div class="estimate-box" id="estimateBox">
-      <!-- JavaScriptで見積もり内容を表示 -->
-    </div>
-
-    <button type="submit" class="submit-btn" id="submitButton">予約を確定する</button>
-
-    <div class="note">※お支払いは撮影当日、現金または振込にてお願いしております。</div>
-  </form>
-
-  <script>
-    // 見積もり表示
-    const estimate = JSON.parse(localStorage.getItem('estimate'));
-    const estimateBox = document.getElementById('estimateBox');
-    const submitButton = document.getElementById('submitButton');
-
-    if (estimate) {
-      estimateBox.innerHTML = `
-        <h2>見積もり内容の確認</h2>
-        <p><strong>撮影内容:</strong> ${estimate.content}</p>
-        <p><strong>撮影時間:</strong> ${estimate.duration}</p>
-        <p><strong>編集:</strong> ${estimate.editing}</p>
-        <p><strong>SNS掲載:</strong> ${estimate.sns}</p>
-        <p><strong>見積もり金額:</strong> ¥${estimate.total.toLocaleString()} (税込)</p>
-      `;
-    } else {
-      estimateBox.innerHTML = '<p>見積もり情報が見つかりません。トップページに戻ってやり直してください。</p>';
-      document.getElementById('reservationForm').style.display = 'none';
-    }
-
-    // その他選択肢時の表示切替
-    document.getElementById('purpose').addEventListener('change', function () {
-      document.getElementById('purposeOther').style.display = this.value === 'その他' ? 'block' : 'none';
-    });
-
-    document.getElementById('location').addEventListener('change', function () {
-      document.getElementById('locationOther').style.display = this.value === 'その他' ? 'block' : 'none';
-    });
-
-    // ご質問「はい」なら案内＆送信無効
-    document.getElementById('hasQuestion').addEventListener('change', function () {
-      const show = this.value === 'はい';
-      document.getElementById('contactInfo').style.display = show ? 'block' : 'none';
-      submitButton.disabled = show;
-    });
-  </script>
-</body>
-</html>
+    <div class="estimate-box"
