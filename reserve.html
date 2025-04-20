@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>撮影予約フォーム</title>
   <style>
+    html, body {
+      height: auto;
+      overflow: auto !important;
+    }
+
     body {
       font-family: sans-serif;
       background-color: #f9f9f9;
@@ -175,7 +180,6 @@
   </form>
 
   <script>
-    // 見積もり表示
     const estimate = JSON.parse(localStorage.getItem('estimate'));
     const estimateBox = document.getElementById('estimateBox');
     const submitButton = document.getElementById('submitButton');
@@ -193,7 +197,6 @@
       estimateBox.innerHTML = '<p>見積もり情報が見つかりません。<br>トップページに戻って見積もりをお試しください。</p>';
     }
 
-    // その他選択肢時の表示切替
     document.getElementById('purpose').addEventListener('change', function () {
       document.getElementById('purposeOther').style.display = this.value === 'その他' ? 'block' : 'none';
     });
@@ -202,7 +205,6 @@
       document.getElementById('locationOther').style.display = this.value === 'その他' ? 'block' : 'none';
     });
 
-    // ご質問「はい」なら案内＆送信無効
     document.getElementById('hasQuestion').addEventListener('change', function () {
       const show = this.value === 'はい';
       document.getElementById('contactInfo').style.display = show ? 'block' : 'none';
