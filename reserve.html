@@ -161,6 +161,9 @@
 
     <div class="note">※お支払いは撮影当日、現金または振込にてお願いしております。</div>
     <form id="reservationForm" action="https://formspree.io/f/https://formspree.io/f/mwplgznp" method="POST"> 
+      <form action="https://formspree.io/f/xxxxxxxx" method="POST" target="_blank">
+  <input type="hidden" name="_redirect" value="https://kortafilms.github.io/estimate/thanks.html">
+
   </form>
 
   <script>
@@ -201,7 +204,6 @@
 
     // フォーム送信処理
     document.getElementById('reservationForm').addEventListener('submit', function (e) {
-      e.preventDefault();
       alert('ご予約が完了しました！ありがとうございます。');
       localStorage.removeItem('estimate');
       this.reset();
