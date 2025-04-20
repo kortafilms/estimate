@@ -18,24 +18,13 @@
       margin-bottom: 1em;
     }
 
-    .estimate-box {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 1.5em;
-      border-radius: 6px;
-      margin-bottom: 2em;
-    }
-
-    .estimate-box p {
-      margin: 0.5em 0;
-    }
-
     form label {
       display: block;
       margin-top: 1em;
+      font-weight: bold;
     }
 
-    form input, form textarea {
+    form input, form select, form textarea {
       width: 100%;
       padding: 0.5em;
       font-size: 1em;
@@ -44,7 +33,7 @@
 
     .submit-btn {
       display: block;
-      margin: 2em auto 0;
+      margin: 2em auto 1em;
       background-color: #c0392b;
       color: white;
       padding: 0.8em 2em;
@@ -58,26 +47,96 @@
     .submit-btn:hover {
       background-color: #a93226;
     }
+
+    .note {
+      font-size: 0.85em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 2em;
+    }
+
+    .estimate-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1.5em;
+      border-radius: 6px;
+      margin-top: 3em;
+    }
+
+    .estimate-box p {
+      margin: 0.5em 0;
+    }
   </style>
 </head>
 <body>
-  <h1>ご予約内容の確認</h1>
+  <h1>撮影予約フォーム</h1>
+
+  <form id="reservationForm">
+    <label>1. あなたのお名前を教えてください</label>
+    <input type="text" name="name" placeholder="例: 本田 健" required>
+
+    <label>2. あなたのメールアドレスを教えてください</label>
+    <input type="email" name="email" placeholder="例: honda.1995@gmail.com" required>
+
+    <label>3. ご希望の撮影目的を教えてください</label>
+    <select name="purpose" required>
+      <option value="">選択してください</option>
+      <option>企業・店舗PR</option>
+      <option>イベント</option>
+      <option>ポートレート</option>
+      <option>商品・サービス紹介</option>
+      <option>その他（自由記述）</option>
+    </select>
+    <textarea name="purposeOther" placeholder="その他の場合は内容をご記入ください"></textarea>
+
+    <label>4. ご希望の画角の向きを教えてください</label>
+    <select name="orientation" required>
+      <option value="">選択してください</option>
+      <option>縦向き（インスタリール等のSNS用）</option>
+      <option>横向き（ウェブサイトやYoutube用）</option>
+      <option>未定（相談したい）</option>
+    </select>
+
+    <label>5. 撮影場所について教えてください</label>
+    <select name="location" required>
+      <option value="">選択してください</option>
+      <option>呉市内</option>
+      <option>広島市内</option>
+      <option>広島県内（呉市・広島市を除く）</option>
+      <option>その他（自由記述）</option>
+    </select>
+    <textarea name="locationOther" placeholder="その他の場合は内容をご記入ください"></textarea>
+
+    <label>6. おおまかな撮影希望日を教えてください</label>
+    <select name="datePreference" required>
+      <option value="">選択してください</option>
+      <option>今月中</option>
+      <option>来月中</option>
+      <option>基本的にいつでもOK</option>
+      <option>未定</option>
+    </select>
+
+    <label>7. 見積もり金額に対するあなたの考えを教えてください（5段階評価）</label>
+    <select name="priceOpinion" required>
+      <option value="">選択してください</option>
+      <option>高い</option>
+      <option>やや高い</option>
+      <option>適正</option>
+      <option>やや安い</option>
+      <option>安い</option>
+    </select>
+
+    <label>8. ご質問やご相談はありますか？</label>
+    <textarea name="message" rows="4" placeholder="ご自由にご記入ください"></textarea>
+
+    <button type="submit" class="submit-btn">予約を確定する</button>
+
+    <div class="note">※お支払いは撮影当日、現金または振込にてお願いしております。</div>
+  </form>
+
   <div class="estimate-box" id="estimateBox">
     <!-- JavaScriptで見積もり内容を表示 -->
   </div>
-
-  <form id="reservationForm">
-    <label>お名前</label>
-    <input type="text" name="name" required>
-
-    <label>メールアドレス</label>
-    <input type="email" name="email" required>
-
-    <label>ご要望やご質問（任意）</label>
-    <textarea name="message" rows="5"></textarea>
-
-    <button type="submit" class="submit-btn">予約を確定する</button>
-  </form>
 
   <script>
     // localStorageから見積もりデータを取得
@@ -86,12 +145,12 @@
 
     if (estimate) {
       estimateBox.innerHTML = `
+        <h2>見積もり内容の確認</h2>
         <p><strong>撮影内容:</strong> ${estimate.content}</p>
         <p><strong>撮影時間:</strong> ${estimate.duration}</p>
         <p><strong>編集:</strong> ${estimate.editing}</p>
         <p><strong>SNS掲載:</strong> ${estimate.sns}</p>
         <p><strong>見積もり金額:</strong> ¥${estimate.total.toLocaleString()} (税込)</p>
-        <p>この内容で予約を確定しますか？</p>
       `;
     } else {
       estimateBox.innerHTML = '<p>見積もり情報が見つかりません。トップページに戻ってやり直してください。</p>';
