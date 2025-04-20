@@ -5,24 +5,24 @@
   <title>撮影費用 かんたん見積もりフォーム</title>
   <style>
     .reserve-button {
-  display: block;
-  text-align: center;
-  background-color: #c0392b;
-  color: white;
-  padding: 0.8em 2em;
-  font-size: 1em;
-  font-weight: bold;
-  margin: 1.5em auto 0;
-  width: fit-content;
-  border-radius: 4px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+      display: block;
+      text-align: center;
+      background-color: #c0392b;
+      color: white;
+      padding: 0.8em 2em;
+      font-size: 1em;
+      font-weight: bold;
+      margin: 1.5em auto 0;
+      width: fit-content;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-.reserve-button:hover {
-  background-color: #a93226;
-}
+    .reserve-button:hover {
+      background-color: #a93226;
+    }
 
     body {
       font-family: sans-serif;
@@ -178,14 +178,6 @@
       const duration = document.getElementById("duration").value;
       const editing = document.getElementById("editing").value;
       const sns = document.getElementById("sns").value;
-      const estimateData = {
-  content,
-  duration,
-  editing,
-  sns,
-  total
-};
-localStorage.setItem('estimate', JSON.stringify(estimateData));
 
       const basePrices = {
         '写真': {
@@ -210,22 +202,33 @@ localStorage.setItem('estimate', JSON.stringify(estimateData));
 
       let price = basePrices[content][duration];
 
-      // 編集なしの割引
       if (editing === '編集なし(素材データのみ)') {
         if (content === '写真') price *= 0.8;
         else if (content === '動画') price *= 0.6;
         else if (content === '写真と動画') price *= 0.75;
       }
 
-      // SNS OK の割引
       if (sns === 'OK') {
         price *= 0.9;
       }
 
+      const total = Math.round(price);
+
       document.getElementById("price").innerHTML =
-        `見積もり金額: ¥${Math.round(price).toLocaleString()}<small>(税込)</small>`;
+        `見積もり金額: ¥${total.toLocaleString()}<small>(税込)</small>`;
+
+      const estimateData = {
+        content,
+        duration,
+        editing,
+        sns,
+        total
+      };
+      localStorage.setItem('estimate', JSON.stringify(estimateData));
     }
   </script>
-<a href="reserve.html" class="reserve-button">撮影のご予約はこちら</a>
+
+  <!-- リンク先は reserve.html -->
+  <a href="reserve.html" class="reserve-button">撮影のご予約はこちら</a>
 </body>
 </html>
