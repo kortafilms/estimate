@@ -2,28 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>撮影費用 かんたん見積もりフォーム</title>
   <style>
-    .reserve-button {
-      display: block;
-      text-align: center;
-      background-color: #c0392b;
-      color: white;
-      padding: 0.8em 2em;
-      font-size: 1em;
-      font-weight: bold;
-      margin: 1.5em auto 0;
-      width: fit-content;
-      border-radius: 4px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .reserve-button:hover {
-      background-color: #a93226;
-    }
-
     body {
       font-family: sans-serif;
       background-color: #f2f2f2;
@@ -31,25 +12,29 @@
       max-width: 600px;
       margin: auto;
       color: #333;
+      font-size: 1.1em; /* 一回り大きく */
+      line-height: 1.6;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 0.2em;
+      margin-bottom: 0.4em;
+      font-size: 1.6em;
     }
 
     .description {
       text-align: center;
-      font-size: 0.85em;
+      font-size: 0.95em;
       color: #666;
-      margin-bottom: 1.5em;
+      margin-bottom: 2em;
     }
 
     label {
       display: flex;
       align-items: center;
-      margin-top: 1.2em;
+      margin-top: 2em; /* 質問間の余白を拡大 */
       font-weight: bold;
+      font-size: 1em;
     }
 
     .tooltip {
@@ -79,7 +64,7 @@
       background: white;
       border: 1px solid #ccc;
       padding: 0.7em;
-      font-size: 0.8em;
+      font-size: 0.9em;
       width: 250px;
       z-index: 10;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -87,22 +72,34 @@
 
     select {
       width: 100%;
-      padding: 0.5em;
-      font-size: 1em;
-      margin-top: 0.3em;
+      padding: 0.8em; /* パディング拡大で操作性アップ */
+      font-size: 1.1em; /* 表示サイズアップ */
+      margin-top: 0.5em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: white;
     }
 
     button {
       display: block;
-      margin: 2em auto 0.5em;
+      margin: 2em auto 1em;
       padding: 0.8em 2em;
-      font-size: 1em;
+      font-size: 1.1em;
       cursor: pointer;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
     }
 
     #price {
-      font-size: 1.5em;
-      margin-top: 1em;
+      font-size: 1.6em;
+      margin-top: 1.5em;
       font-weight: bold;
       color: #2c3e50;
       text-align: center;
@@ -116,9 +113,29 @@
 
     .price-note {
       text-align: center;
-      font-size: 0.8em;
+      font-size: 0.9em;
       color: #666;
       margin-top: 0.5em;
+    }
+
+    .reserve-button {
+      display: block;
+      text-align: center;
+      background-color: #c0392b;
+      color: white;
+      padding: 0.8em 2em;
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 2em auto 0;
+      width: fit-content;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .reserve-button:hover {
+      background-color: #a93226;
     }
   </style>
 </head>
@@ -172,66 +189,62 @@
   <div id="price">見積もり金額: ¥0<small>(税込)</small></div>
   <div class="price-note">*遠方での撮影の場合は、別途出張料を頂く場合がございますので、あらかじめご了承ください。</div>
 
- <script>
-  function calculate() {
-    const content = document.getElementById("content").value;
-    const duration = document.getElementById("duration").value;
-    const editing = document.getElementById("editing").value;
-    const sns = document.getElementById("sns").value;
-
-    const basePrices = {
-      '写真': {
-        '約1時間': 10000,
-        '約2時間': 16000,
-        '3~4時間': 25000,
-        '半日(約8時間)': 35000
-      },
-      '動画': {
-        '約1時間': 16000,
-        '約2時間': 25000,
-        '3~4時間': 36000,
-        '半日(約8時間)': 46000
-      },
-      '写真と動画': {
-        '約1時間': 23000,
-        '約2時間': 33000,
-        '3~4時間': 45000,
-        '半日(約8時間)': 56000
-      }
-    };
-
-    let price = basePrices[content][duration];
-
-    // 編集なしの割引
-    if (editing === '編集なし(素材データのみ)') {
-      if (content === '写真') price *= 0.8;
-      else if (content === '動画') price *= 0.6;
-      else if (content === '写真と動画') price *= 0.75;
-    }
-
-    // SNS掲載NGの場合は10%増額
-    if (sns === 'NG') {
-      price *= 1.1;
-    }
-
-    const total = Math.round(price);
-
-    document.getElementById("price").innerHTML =
-      `見積もり金額: ¥${total.toLocaleString()}<small>(税込)</small>`;
-
-    const estimateData = {
-      content,
-      duration,
-      editing,
-      sns,
-      total
-    };
-    localStorage.setItem('estimate', JSON.stringify(estimateData));
-  }
-</script>
-
-
-  <!-- リンク先は reserve.html -->
   <a href="reserve.html" class="reserve-button">撮影のご予約はこちら</a>
+
+  <script>
+    function calculate() {
+      const content = document.getElementById("content").value;
+      const duration = document.getElementById("duration").value;
+      const editing = document.getElementById("editing").value;
+      const sns = document.getElementById("sns").value;
+
+      const basePrices = {
+        '写真': {
+          '約1時間': 10000,
+          '約2時間': 16000,
+          '3~4時間': 25000,
+          '半日(約8時間)': 35000
+        },
+        '動画': {
+          '約1時間': 16000,
+          '約2時間': 25000,
+          '3~4時間': 36000,
+          '半日(約8時間)': 46000
+        },
+        '写真と動画': {
+          '約1時間': 23000,
+          '約2時間': 33000,
+          '3~4時間': 45000,
+          '半日(約8時間)': 56000
+        }
+      };
+
+      let price = basePrices[content][duration];
+
+      if (editing === '編集なし(素材データのみ)') {
+        if (content === '写真') price *= 0.8;
+        else if (content === '動画') price *= 0.6;
+        else if (content === '写真と動画') price *= 0.75;
+      }
+
+      if (sns === 'NG') {
+        price *= 1.1;
+      }
+
+      const total = Math.round(price);
+
+      document.getElementById("price").innerHTML =
+        `見積もり金額: ¥${total.toLocaleString()}<small>(税込)</small>`;
+
+      const estimateData = {
+        content,
+        duration,
+        editing,
+        sns,
+        total
+      };
+      localStorage.setItem('estimate', JSON.stringify(estimateData));
+    }
+  </script>
 </body>
 </html>
