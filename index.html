@@ -62,15 +62,11 @@
       background: white;
       border: 1px solid #ccc;
       padding: 0.8em;
-      font-size: 1em;
+      font-size: 0.9em;
       width: 260px;
       z-index: 10;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       margin-top: 0.3em;
-    }
-
-    .tooltip.active .tooltip-text {
-      display: block;
     }
 
     select {
@@ -159,7 +155,7 @@
     <div class="tooltip" onclick="toggleTooltip(this)">?
       <div class="tooltip-text">
         写真の場合: 1時間で約40枚、2時間で約90枚の写真データが目安になります。<br>
-        動画の場合: 1時間で20~30秒の動画1本、2時間で 40~60秒の動画1本が目安になります。
+        動画の場合: 1時間で20~30秒の動画1本、2時間で40~60秒の動画1本が目安になります。
       </div>
     </div>
   </label>
@@ -201,7 +197,12 @@
 
   <script>
     function toggleTooltip(elem) {
-      elem.classList.toggle("active");
+      const tip = elem.querySelector(".tooltip-text");
+      if (tip.style.display === "block") {
+        tip.style.display = "none";
+      } else {
+        tip.style.display = "block";
+      }
     }
 
     function calculate() {
@@ -240,3 +241,28 @@
 
       if (editing === '編集なし(素材データのみ)') {
         if (content === '写真') price *= 0.8;
+        else if (content === '動画') price *= 0.6;
+        else if (content === '写真と動画') price *= 0.75;
+      }
+
+      if (sns === 'NG') {
+        price *= 1.1;
+      }
+
+      const total = Math.round(price);
+
+      document.getElementById("price").innerHTML =
+        `見積もり金額: ¥${total.toLocaleString()}<small>(税込)</small>`;
+
+      const estimateData = {
+        content,
+        duration,
+        editing,
+        sns,
+        total
+      };
+      localStorage.setItem('estimate', JSON.stringify(estimateData));
+    }
+  </script>
+</body>
+</html>
