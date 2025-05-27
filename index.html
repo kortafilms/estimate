@@ -19,7 +19,7 @@
     h1 {
       text-align: center;
       margin-bottom: 0.5em;
-      font-size: 1.25em; /* タイトルが改行せずに1行で収まる大きさ */
+      font-size: 1.25em;
     }
 
     .description {
@@ -38,6 +38,7 @@
     }
 
     .tooltip {
+      position: relative;
       display: inline-block;
       background: #ccc;
       color: #333;
@@ -49,32 +50,33 @@
       margin-left: 0.5em;
       cursor: pointer;
       line-height: 22px;
-      position: relative;
       flex-shrink: 0;
-    }
-
-    .tooltip:hover .tooltip-text {
-      display: block;
     }
 
     .tooltip-text {
       display: none;
       position: absolute;
-      top: 30px;
-      left: 0;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
       background: white;
       border: 1px solid #ccc;
-      padding: 1em;
-      font-size: 1.4em; /* 2周り大きく */
-      width: 250px;
+      padding: 0.8em;
+      font-size: 1em;
+      width: 260px;
       z-index: 10;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 0.3em;
+    }
+
+    .tooltip.active .tooltip-text {
+      display: block;
     }
 
     select {
-      width: 90%; /* 見出しより少し短めに */
+      width: 95%;
       padding: 0.6em;
-      font-size: 0.95em; /* 少しだけ小さく */
+      font-size: 0.95em;
       margin-top: 0.5em;
       border-radius: 4px;
       border: 1px solid #ccc;
@@ -154,7 +156,7 @@
   </select>
 
   <label>2. ご希望の撮影時間を教えてください
-    <div class="tooltip">?
+    <div class="tooltip" onclick="toggleTooltip(this)">?
       <div class="tooltip-text">
         写真の場合: 1時間で約40枚、2時間で約90枚の写真データが目安になります。<br>
         動画の場合: 1時間で20~30秒の動画1本、2時間で 40~60秒の動画1本が目安になります。
@@ -177,7 +179,7 @@
   </select>
 
   <label>4. 撮影データの利用について教えてください
-    <div class="tooltip">?
+    <div class="tooltip" onclick="toggleTooltip(this)">?
       <div class="tooltip-text">
         SNSへの掲載をご了承いただける場合は、一律で料金を約10％割引させていただきます。<br>
         なお、個人情報には十分配慮し、個人名の掲載いたしませんのでご安心ください。
@@ -198,6 +200,10 @@
   <a href="reserve.html" class="reserve-button">撮影のご予約はこちら</a>
 
   <script>
+    function toggleTooltip(elem) {
+      elem.classList.toggle("active");
+    }
+
     function calculate() {
       const content = document.getElementById("content").value;
       const duration = document.getElementById("duration").value;
@@ -234,28 +240,3 @@
 
       if (editing === '編集なし(素材データのみ)') {
         if (content === '写真') price *= 0.8;
-        else if (content === '動画') price *= 0.6;
-        else if (content === '写真と動画') price *= 0.75;
-      }
-
-      if (sns === 'NG') {
-        price *= 1.1;
-      }
-
-      const total = Math.round(price);
-
-      document.getElementById("price").innerHTML =
-        `見積もり金額: ¥${total.toLocaleString()}<small>(税込)</small>`;
-
-      const estimateData = {
-        content,
-        duration,
-        editing,
-        sns,
-        total
-      };
-      localStorage.setItem('estimate', JSON.stringify(estimateData));
-    }
-  </script>
-</body>
-</html>
